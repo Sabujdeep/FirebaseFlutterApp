@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_01/screens/signup.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/auth_bloc.dart';
@@ -61,7 +62,7 @@ class AuthWrapper extends StatelessWidget {
         }
 
         // ❌ Not Logged In
-        return const LoginPage(); // your existing login
+        return const SignupPage(); // your existing login
       },
     );
   }
