@@ -59,8 +59,8 @@ class AuthWrapper extends StatelessWidget {
         }
 
         // ❌ Not Logged In
-        return const SignupPage(); // your existing login
-        // return const LoginPage();
+        // return const SignupPage(); // your existing login
+        return const LoginPage();
       },
     );
   }
