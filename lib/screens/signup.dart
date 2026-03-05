@@ -89,12 +89,24 @@ class _SignupPageState extends State<SignupPage> {
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
                             );
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Signup Successful")),
+                        );
                         print("Sign up successfull");
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'weak-password') {
                           print('Password too weak');
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Password too weak")),
+                          );
+                          
                         } else if (e.code == 'email-already-in-use') {
                           print("Email already exists");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("User already exists")),
+                          );
                         }
                       } catch (e) {
                         print(e);
