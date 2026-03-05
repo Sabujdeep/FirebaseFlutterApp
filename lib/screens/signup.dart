@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_app_01/screens/homepage.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -84,31 +85,46 @@ class _SignupPageState extends State<SignupPage> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       try {
+                        // creating a user in firebase
                         await FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
                             );
 
+                        // snackbar of successful signup
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Signup Successful")),
                         );
-                        print("Sign up successfull");
+                        debugPrint("Sign up successful");
+
+                        // navigation to the homepage
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                        );
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'weak-password') {
-                          print('Password too weak');
 
+                          // snackbar for weak password
+                          print('Password too weak');
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Password too weak")),
                           );
-                          
+
                         } else if (e.code == 'email-already-in-use') {
+                          
+                          // snackbar for already existing user
                           print("Email already exists");
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("User already exists")),
                           );
+
                         }
                       } catch (e) {
+                        
                         print(e);
                       }
                     }
