@@ -46,13 +46,10 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-
         // ⏳ Loading State
         if (state is AuthLoading || state is AuthInitial) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 
@@ -63,6 +60,7 @@ class AuthWrapper extends StatelessWidget {
 
         // ❌ Not Logged In
         return const SignupPage(); // your existing login
+        // return const LoginPage();
       },
     );
   }
