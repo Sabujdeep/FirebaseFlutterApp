@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -8,7 +9,6 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-
   final _formKey = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
@@ -23,12 +23,11 @@ class _SignupPageState extends State<SignupPage> {
 
           child: Form(
             key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 Text(
                   "Sign Up",
                   textAlign: TextAlign.center,
@@ -82,17 +81,28 @@ class _SignupPageState extends State<SignupPage> {
                 SizedBox(height: 20),
 
                 ElevatedButton(
-                  onPressed: () {
-
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      print('Email: ${emailController.text}');
-                      print('Password: ${passwordController.text}');
+                      try {
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                            );
+                        print("Sign up successfull");
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'weak-password') {
+                          print('Password too weak');
+                        } else if (e.code == 'email-already-in-use') {
+                          print("Email already exists");
+                        }
+                      } catch (e) {
+                        print(e);
+                      }
                     }
-
                   },
                   child: Text("Sign Up"),
                 ),
-
               ],
             ),
           ),
