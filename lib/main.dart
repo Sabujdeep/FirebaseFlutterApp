@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_01/core/auth/auth_wrapper.dart';
 import 'package:flutter_app_01/screens/signup.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,6 +24,7 @@ void main() async {
   await LocalNotificationService.initialize();
 
   runApp(const MyApp());
+  print(FirebaseAuth.instance.currentUser);
 }
 
 class MyApp extends StatelessWidget {
@@ -35,33 +38,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: AuthWrapper(),
       ),
-    );
-  }
-}
-
-class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        // ⏳ Loading State
-        if (state is AuthLoading || state is AuthInitial) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
-        // ✅ Logged In
-        if (state is AuthAuthenticated) {
-          return const HomeScreen(); // your existing screen
-        }
-
-        // ❌ Not Logged In
-        // return const SignupPage(); // your existing login
-        return const LoginPage();
-      },
     );
   }
 }
