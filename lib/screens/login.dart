@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_01/screens/homepage.dart';
+import 'package:flutter_app_01/screens/signup.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,7 +11,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final _formKey = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
@@ -24,64 +24,49 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> loginUser() async {
-
     if (_formKey.currentState!.validate()) {
-
       try {
-
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login Successful")),
-        );
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Login Successful")));
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
-
       } on FirebaseAuthException catch (e) {
-
         if (e.code == 'user-not-found') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("No user found with this email")),
           );
+        } else if (e.code == 'wrong-password') {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("Wrong password")));
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(e.message ?? "Login failed")));
         }
-
-        else if (e.code == 'wrong-password') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Wrong password")),
-          );
-        }
-
-        else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message ?? "Login failed")),
-          );
-        }
-
       } catch (e) {
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Something went wrong")),
-        );
-
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Something went wrong")));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       body: Center(
-
         child: Padding(
           padding: const EdgeInsets.all(20),
 
@@ -91,12 +76,10 @@ class _LoginPageState extends State<LoginPage> {
             autovalidateMode: AutovalidateMode.onUserInteraction,
 
             child: Column(
-
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
 
               children: [
-
                 const Text(
                   "Login",
                   textAlign: TextAlign.center,
@@ -153,6 +136,23 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text("Login"),
                 ),
 
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Dont have an account? "),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => SignupPage()),
+                        );
+                      },
+                      child: Text("Sign Up"),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

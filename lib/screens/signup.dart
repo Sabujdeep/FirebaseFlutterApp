@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_01/screens/homepage.dart';
+import 'package:flutter_app_01/screens/login.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -107,29 +108,42 @@ class _SignupPageState extends State<SignupPage> {
                         );
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'weak-password') {
-
                           // snackbar for weak password
                           print('Password too weak');
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Password too weak")),
                           );
-
                         } else if (e.code == 'email-already-in-use') {
-                          
                           // snackbar for already existing user
                           print("Email already exists");
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("User already exists")),
                           );
-
                         }
                       } catch (e) {
-                        
                         print(e);
                       }
                     }
                   },
                   child: Text("Sign Up"),
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Already have an account? "),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => LoginPage()),
+                        );
+                      },
+                      child: Text("Log In"),
+                    ),
+                  ],
                 ),
               ],
             ),
