@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_app_01/screens/homepage.dart';
@@ -22,6 +23,24 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.dispose();
     super.dispose();
   }
+
+Future<UserCredential?> signInWithGoogle() async {
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+  if (googleUser == null) {
+    return null;
+  }
+
+  final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth.accessToken,
+    idToken: googleAuth.idToken,
+  );
+
+  return await FirebaseAuth.instance.signInWithCredential(credential);
+}
 
   Future<void> loginUser() async {
     if (_formKey.currentState!.validate()) {
@@ -134,6 +153,29 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: loginUser,
                   child: const Text("Login"),
+                ),
+
+                const SizedBox(height: 20),
+
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.login),
+                  label: const Text("Continue with Google"),
+                  onPressed: () async {
+                    try {
+                      await signInWithGoogle();
+
+                      if (!mounted) return;
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => HomeScreen()),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Google login failed")),
+                      );
+                    }
+                  },
                 ),
 
                 const SizedBox(height: 20),
