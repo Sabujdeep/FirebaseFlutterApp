@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_01/screens/login.dart';
 import '../core/services/local_notification_service.dart';
@@ -39,6 +40,14 @@ class HomeScreen extends StatelessWidget {
                 );
               },
               child: const Text("Logout"),
+            ),
+
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                FirebaseCrashlytics.instance.crash();
+              },
+              child: const Text("Test Crash"),
             ),
           ],
         ),

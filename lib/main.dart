@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_01/core/auth/auth_wrapper.dart';
 import 'package:flutter_app_01/screens/signup.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'bloc/auth_bloc.dart';
 import 'bloc/auth_event.dart';
 import 'bloc/auth_state.dart';
@@ -22,6 +24,19 @@ void main() async {
 
   // 🔔 Initialize Local Notifications
   await LocalNotificationService.initialize();
+
+  // initialize crashlytics
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+  // this have to wrap around runapp;
+  runZonedGuarded(
+    () {
+      runApp(const MyApp());
+    },
+    (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack);
+    },
+  );
 
   runApp(const MyApp());
   print(FirebaseAuth.instance.currentUser);
